@@ -1,4 +1,4 @@
-// src/client.ts
+
 import { connect, NatsConnection, StringCodec, Subscription } from 'nats';
 
 class NatsClient {
@@ -24,7 +24,7 @@ class NatsClient {
 
             console.log(`Client ${this.clientId}: Connected to NATS at ${this.nc.getServer()}`);
             
-            // Setup connection monitoring
+            //connection monitorin
             this.setupConnectionMonitoring();
             
             return true;
@@ -140,9 +140,6 @@ class NatsClient {
         }
     }
 
-    /**
-     * Send a direct message to a specific client
-     */
     async sendDirectMessage(targetClientId: string, message: string): Promise<string | void> {
         const directSubject = `direct.${targetClientId}`;
         try {
@@ -150,7 +147,6 @@ class NatsClient {
             
             
 
-            // If you want to wait for confirmation that the message was received
             const response = await this.nc.request(directSubject, this.sc.encode(message), {
                 timeout: 5000,
             
@@ -165,7 +161,6 @@ class NatsClient {
         }
     }
 }
-// // Example usage
 // async function runExample() {
 //     // Create two clients
 //     const publisher = new NatsClient('Publisher');
@@ -210,25 +205,20 @@ class NatsClient {
 // export default NatsClient;
 
 
-// Example usage
 async function runDirectMessageExample() {
     const client1 = new NatsClient('client1');
     const client2 = new NatsClient('client2');
 
     try {
-        // Connect both clients
         await client1.connect();
         await client2.connect();
 
-        // Subscribe to direct messages
         await client1.subscribeToDirectMessages();
         await client2.subscribeToDirectMessages();
 
-        // Send direct messages between clients
         await client1.sendDirectMessage('client2', 'Hello client2!');
         await client2.sendDirectMessage('client1', 'Hello back client1!');
 
-        // Wait a bit before closing
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Cleanup
