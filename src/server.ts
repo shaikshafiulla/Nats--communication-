@@ -1,4 +1,3 @@
-// src/server.ts
 import { connect, NatsConnection, StringCodec, Subscription } from 'nats';
 
 class NatsServer {
@@ -9,21 +8,18 @@ class NatsServer {
         try {
             console.log('Starting NATS server...');
             
-            // Connect to NATS
             this.nc = await connect({ 
                 servers: 'nats://localhost:4222',
-                timeout: 3000, // Connection timeout
-                pingInterval: 10000, // Ping interval
-                reconnect: true, // Enable reconnection
+                timeout: 3000, 
+                pingInterval: 10000, 
+                reconnect: true, 
                 maxReconnectAttempts: 10
             });
             
             console.log(`Connected to NATS server at ${this.nc.getServer()}`);
 
-            // Setup subscriptions
             await this.setupSubscriptions();
             
-            // Handle connection events
             this.setupConnectionHandlers();
 
             console.log('NATS server is ready to handle messages');
@@ -54,13 +50,11 @@ class NatsServer {
 
     private async setupSubscriptions() {
         try {
-            // Basic message handler
             const messageSub: Subscription = this.nc.subscribe('messages.>');
             console.log('Subscribed to "messages.>" topic');
 
             this.handleSubscription(messageSub, 'Message Handler');
 
-            // User-related requests handler
             const userSub: Subscription = this.nc.subscribe('user.>');
             console.log('Subscribed to "user.>" topic');
 
@@ -81,7 +75,6 @@ class NatsServer {
                     const data = this.sc.decode(msg.data);
                     console.log(`[${handlerName}] Message data:`, data);
 
-                    // Handle request-reply pattern
                     if (msg.reply) {
                         const response = `Processed ${data} at ${new Date().toISOString()}`;
                         msg.respond(this.sc.encode(response));
@@ -89,7 +82,6 @@ class NatsServer {
                     }
                 } catch (err) {
                     console.error(`[${handlerName}] Error processing message:`, err);
-                    // If it's a request, send error response
                     if (msg.reply) {
                         msg.respond(this.sc.encode(`Error: ${err}`));
                     }
@@ -113,10 +105,8 @@ class NatsServer {
     }
 }
 
-// Start the server
 const server = new NatsServer();
 
-// Handle process termination
 process.on('SIGINT', async () => {
     console.log('Received SIGINT signal');
     try {
@@ -128,7 +118,6 @@ process.on('SIGINT', async () => {
     }
 });
 
-// Start the server
 server.start().catch((err) => {
     console.error('Failed to start server:', err);
     process.exit(1);
