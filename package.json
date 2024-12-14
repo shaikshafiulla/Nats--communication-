@@ -1,0 +1,21 @@
+{
+  "name": "nats",
+  "version": "1.0.0",
+  "description": "nats example",
+  "scripts": {
+    "build": "tsc",
+    "start:server": "ts-node src/server.ts",
+    "start:client": "ts-node src/client.ts",
+    "dev:server": "nodemon src/server.ts",
+    "dev:client": "nodemon src/client.ts"
+  },
+  "dependencies": {
+    "nats": "^2.28.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
